@@ -59,7 +59,7 @@ export const getMessage = async (req, res) => {
         }).populate("messages")  // populate id to message 
 
         if(!conversation){
-            return res.ststus(200).json([]);
+            return res.status(200).json([]);
         }
 
         res.status(200).json(conversation.messages);

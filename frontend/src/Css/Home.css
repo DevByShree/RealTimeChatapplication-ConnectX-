@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;700&display=swap');
+
+/* --- Basic Setup --- */
+body {
+    background-color: white;
+    /* global white */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.bg-color {
+    min-height: 100vh;
+    width: 100%;
+    background-color: black;
+    color: white;
+    position: relative;
+}
+
+.banner {
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- 3D Slider Section --- */
+.banner .slider {
+    position: absolute;
+    height: 220px;
+    width: 220px;
+    top: 45%;
+    left: calc(26% - 110px);
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
+    animation: autoRun 16s linear infinite;
+    z-index: 2;
+}
+
+@keyframes autoRun {
+    from {
+        transform: perspective(1000px) rotateX(-16deg) rotateY(0deg);
+    }
+
+    to {
+        transform: perspective(1000px) rotateX(-16deg) rotateY(360deg);
+    }
+}
+
+.banner .slider .item {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotateY(calc((var(--position) - 1) * (360deg / var(--quantity)))) translateZ(150px);
+}
+
+.banner .slider .item img {
+    width: 80%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* --- ConnectX Logo & Graphics --- */
+.banner .logo {
+    position: absolute;
+    top: 5%;
+    left: 25%;
+    transform: translateX(-50%);
+    font-family: 'Pacifico', cursive;
+    font-size: 40px;
+    background: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    z-index: 10;
+}
+
+.logo-img {
+    width: 120px;
+    height: auto;
+    position: absolute;
+    top: 2%;
+    left: 2%;
+    z-index: 20;
+    animation: logoEntrance 1.2s ease-out forwards, logoFloat 3s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 10px rgba(97, 218, 251, 0.2));
+}
+
+/* --- Vertical Partition Line --- */
+.v-divider {
+    position: absolute;
+    bottom: 0;
+    left: 58%;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+/* --- Text Section --- */
+.text {
+    position: absolute;
+    color: white;
+    bottom: 350px;
+    left: 62%;
+    font-size: 45px;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    width: 30%;
+}
+
+.Close-friends {
+    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
+
+/* --- Buttons (DESKTOP ALIGNMENT FIXED) --- */
+.login-button,
+.Signup-button,
+.Start-Chat {
+    position: absolute;
+    bottom: 25%;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    transition: all 0.3s ease;
+}
+
+.login-button {
+    left: 62%;
+    width: 110px;
+    border-radius: 30px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #61dafb 0%, #21a1f1 100%);
+    box-shadow: 0 4px 15px rgba(97, 218, 251, 0.3);
+}
+
+.Signup-button {
+    left: 72%;
+    width: 110px;
+    border-radius: 30px;
+    font-weight: 600;
+    color: #61dafb;
+    background: rgba(97, 218, 251, 0.1);
+    border: 2px solid #61dafb;
+    backdrop-filter: blur(5px);
+}
+
+.Start-Chat {
+    left: 82%;
+    width: 140px;
+    border-radius: 999px;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(-45deg, #61dafb, #21a1f1, #0b5ed7, #61dafb);
+    background-size: 400% 400%;
+    animation: startFade 1s ease-out forwards, gradientBG 5s ease infinite;
+    box-shadow: 0 10px 20px rgba(11, 94, 215, 0.3);
+}
+
+.login-button:hover,
+.Signup-button:hover,
+.Start-Chat:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.2);
+}
+
+/* --- MOBILE RESPONSIVE (CENTER ALIGNMENT FIXED) --- */
+@media (max-width: 768px) {
+    .banner {
+        height: auto;
+        min-height: 100vh;
+        padding-bottom: 50px;
+    }
+
+    .v-divider {
+        display: none;
+    }
+
+    .banner .slider {
+        position: relative;
+        left: 50% !important;
+        top: 0 !important;
+        margin: 80px 0 150px -110px !important;
+        transform: perspective(1000px) scale(0.7);
+    }
+
+    .banner .logo {
+        position: relative;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        margin: 20px 0;
+    }
+
+    .text {
+        position: relative;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: 100%;
+        font-size: 28px;
+        text-align: center;
+        padding: 0 20px;
+        margin-bottom: 30px;
+    }
+
+    .login-button,
+    .Signup-button,
+    .Start-Chat {
+        position: relative !important;
+        left: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        width: 85% !important;
+        margin: 12px auto !important;
+    }
+}
+
+@keyframes autoRun {
+    from {
+        transform: perspective(1000px) rotateX(-16deg) rotateY(0deg);
+    }
+
+    to {
+        transform: perspective(1000px) rotateX(-16deg) rotateY(360deg);
+    }
+}
+
+@keyframes startFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes logoEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes logoFloat {
+    from {
+        transform: translateY(0px);
+    }
+
+    to {
+        transform: translateY(10px);
+    }
+}

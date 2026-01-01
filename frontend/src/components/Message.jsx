@@ -1,0 +1,105 @@
+import React, { useEffect, useState, useRef } from "react";
+import "./Message.css";
+import socket from "../socket";
+
+const Message = ({ selectedUser }) => {
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([]);
+  const bottomRef = useRef(null);
+
+  const receiverId = selectedUser?._id;
+
+  // 1️ Load old messages from DB
+  useEffect(() => {
+    if (!receiverId) return;
+
+    fetch(`http://localhost:5000/api/message/${receiverId}`, {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => setMessages(data))
+      .catch((err) => console.log(err));
+  }, [receiverId]);
+
+  // 2️ Receive message via socket (REAL-TIME)
+  useEffect(() => {
+    if (!receiverId) return;
+
+    const handleReceiveMessage = (newMsg) => {
+      if (
+        newMsg.senderId === receiverId ||
+        newMsg.receiverId === receiverId
+      ) {
+        setMessages((prev) => [...prev, newMsg]);
+      }
+    };
+
+    socket.on("receiveMessage", handleReceiveMessage);
+
+    return () => {
+      socket.off("receiveMessage", handleReceiveMessage);
+    };
+  }, [receiverId]);
+
+  // 3️ Send message (DB + socket)
+  const sendMessage = async () => {
+    if (!input.trim() || !receiverId) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/message/send/${receiverId}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ message: input }),
+        }
+      );
+
+      const savedMessage = await res.json();
+
+      //  Emit real-time
+      socket.emit("sendMessage", savedMessage);
+
+      setInput("");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // 4️ Auto scroll
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // 5️ UI
+  return (
+    <div className="chat-main">
+      <div className="chat-body">
+        {messages.map((msg, i) => (
+          <div
+            key={i}
+            className={`msg-row ${
+              msg.senderId === receiverId ? "left" : "right"
+            }`}
+          >
+            <div className="msg-bubble">{msg.message}</div>
+          </div>
+        ))}
+        <div ref={bottomRef} />
+      </div>
+
+      <div className="chat-input">
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          placeholder="Type a message..."
+        />
+        <button onClick={sendMessage}>➤</button>
+      </div>
+    </div>
+  );
+};
+
+export default Message;

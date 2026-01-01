@@ -1,0 +1,39 @@
+/* .all{
+  background-color: aliceblue;
+  height: 100vh;
+} */
+ .all {
+  min-height: 100vh;
+  background: #000;          /* black bg */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width:100%;
+}
+
+.container {
+  display: flex;
+  width: 90%;
+  height: 90vh;              /* 👈 ADD THIS (KEY FIX) */
+
+  border-radius: 12px;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+
+/* sm */
+@media (min-width: 640px) {
+  .container {
+    height: 450px;
+  }
+}
+
+/* md */
+@media (min-width: 768px) {
+  .container {
+    height: 550px;
+  }
+}

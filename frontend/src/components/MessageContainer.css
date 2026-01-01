@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+
+:root {
+  --primary-gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-dim: #94a3b8;
+}
+
+.msgfullbox {
+  flex: 1;
+  height: 100vh;
+  background: #080808;
+  /* Soft radial glow for depth */
+  background-image: radial-gradient(circle at 50% 0%, #111827 0%, #080808 100%);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+/* DOT GRID GRAPHIC */
+.msgfullbox::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* EXTRA ORB GLOW (Graphic Element) */
+.msgfullbox::after {
+  content: "";
+  position: absolute;
+  width: 40vw;
+  height: 40vw;
+  background: radial-gradient(circle, rgba(0, 210, 255, 0.07), transparent 70%);
+  top: -10vw;
+  right: -10vw;
+  filter: blur(80px);
+  z-index: 0;
+}
+
+/* HEADER STYLE */
+.header {
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(8, 8, 8, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.nameRaze {
+  color: white;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.5px;
+}
+
+/* EMPTY STATE (Graphic Centering) */
+.msgfullbox.empty {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+  padding: 20px;
+}
+
+/* TITLE WITH GRADIENT & GLOW */
+.welcome-title {
+  font-size: clamp(32px, 5vw, 56px); /* Responsive size */
+  font-weight: 900;
+  letter-spacing: -2px;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 10px 15px rgba(0, 210, 255, 0.2));
+  animation: fadeIn 0.8s ease-out;
+}
+
+.welcome-subtitle {
+  font-size: 16px;
+  color: var(--text-dim);
+  max-width: 450px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* STATUS INDICATOR WITH PULSE */
+.emptytxt {
+  color: #00d2ff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 6px 16px;
+  background: rgba(0, 210, 255, 0.05);
+  border-radius: 100px;
+  border: 1px solid rgba(0, 210, 255, 0.1);
+}
+
+.emptytxt::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #00d2ff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00d2ff, 0 0 20px rgba(0, 210, 255, 0.5);
+  animation: pulseGlow 2s infinite;
+}
+
+/* ANIMATIONS */
+@keyframes pulseGlow {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Layout for Message Input (Optional Graphic enhancement) */
+.input-container {
+  margin-top: auto;
+  padding: 24px;
+  background: linear-gradient(0deg, rgba(8,8,8,1) 0%, rgba(8,8,8,0) 100%);
+  z-index: 10;
+}
+.back-btn {
+  background: transparent;
+  border: none;
+  color: #38bdf8;
+  font-size: 22px;
+  cursor: pointer;
+}

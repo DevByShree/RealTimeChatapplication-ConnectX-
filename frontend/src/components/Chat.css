@@ -1,0 +1,28 @@
+/* Full chat screen layout */
+.chat-layout {
+  display: flex;
+  height: 100vh;          /* full screen height */
+  width: 100vw;
+  background-color: #000; /* dark background */
+  overflow: hidden;
+}
+
+/* Sidebar (left users list) */
+.chat-layout > :first-child {
+  width: 300px;           /* sidebar width */
+  min-width: 260px;
+  max-width: 320px;
+  background: linear-gradient(
+    180deg,
+    #1a1a1a 0%,
+    #0f0f0f 100%
+  );
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Message container (right side) */
+.chat-layout > :last-child {
+  flex: 1;                /* take remaining space */
+  background-color: #080808;
+  display: flex;
+}
