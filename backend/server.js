@@ -13,50 +13,64 @@ import userRoutes from "./routes/user.routes.js";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
-//  Create HTTP server
+//  HTTP server
 const server = http.createServer(app);
 
-//  Socket.IO setup
-const io = new Server(server, {
-  cors: {
-    origin: ["http://localhost:3000", "http://localhost:5173"],
-    credentials: true,
-  },
-});
+//  Allowed frontend origin
+const allowedOrigins = ["http://localhost:3000"];
 
 //  Middlewares
 app.use(
   cors({
-    origin: true,
+    origin: allowedOrigins,
     credentials: true,
   })
 );
 app.use(express.json());
 app.use(cookieParser());
 
-//  Routes
+// 🔹 Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/users", userRoutes);
 
-// ================= SOCKET.IO LOGIC =================
-io.on("connection", (socket) => {
-  console.log(" User connected:", socket.id);
+//  Socket.IO server
+export const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+  },
+});
 
-  socket.on("sendMessage", (message) => {
-    console.log(" Message received:", message);
-    io.emit("receiveMessage", message);
+io.on("connection", (socket) => {
+  console.log(" Socket connected:", socket.id);
+
+  //  User joins his own room (userId)
+  socket.on("joinRoom", (userId) => {
+    if (userId) {
+      socket.join(userId);
+      console.log(" Joined room:", userId);
+    }
+  });
+
+  //  Send message ONLY to receiver
+  socket.on("sendMessage", (msg) => {
+    const receiverId = msg.receiverId;
+
+    if (receiverId) {
+      io.to(receiverId).emit("receiveMessage", msg);
+    }
   });
 
   socket.on("disconnect", () => {
-    console.log(" User disconnected:", socket.id);
+    console.log(" Socket disconnected:", socket.id);
   });
 });
 
 //  Start server
 server.listen(PORT, () => {
   connectTOMongoDB();
-  console.log(` Server running on port ${PORT}`);
+  console.log(` Backend running on http://localhost:${PORT}`);
 });

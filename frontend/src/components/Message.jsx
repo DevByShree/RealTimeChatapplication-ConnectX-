@@ -9,11 +9,18 @@ const Message = ({ selectedUser }) => {
 
   const receiverId = selectedUser?._id;
 
-  // 1️ Load old messages from DB
+  // 🔹 Join socket room (VERY IMPORTANT)
+  useEffect(() => {
+    if (receiverId) {
+      socket.emit("joinRoom", receiverId);
+    }
+  }, [receiverId]);
+
+  // 🔹 Load old messages
   useEffect(() => {
     if (!receiverId) return;
 
-    fetch(`http://localhost:5000/api/message/${receiverId}`, {
+    fetch(`/api/message/${receiverId}`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -21,7 +28,7 @@ const Message = ({ selectedUser }) => {
       .catch((err) => console.log(err));
   }, [receiverId]);
 
-  // 2️ Receive message via socket (REAL-TIME)
+  // 🔹 Receive real-time message
   useEffect(() => {
     if (!receiverId) return;
 
@@ -41,25 +48,27 @@ const Message = ({ selectedUser }) => {
     };
   }, [receiverId]);
 
-  // 3️ Send message (DB + socket)
+  // 🔹 Send message
   const sendMessage = async () => {
     if (!input.trim() || !receiverId) return;
 
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/message/send/${receiverId}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ message: input }),
-        }
-      );
+      const res = await fetch(`/api/message/send/${receiverId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ message: input }),
+      });
 
       const savedMessage = await res.json();
 
-      //  Emit real-time
-      socket.emit("sendMessage", savedMessage);
+      // emit to socket
+      socket.emit("sendMessage", {
+        ...savedMessage,
+        receiverId,
+      });
 
       setInput("");
     } catch (err) {
@@ -67,12 +76,11 @@ const Message = ({ selectedUser }) => {
     }
   };
 
-  // 4️ Auto scroll
+  // 🔹 Auto scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 5️ UI
   return (
     <div className="chat-main">
       <div className="chat-body">
